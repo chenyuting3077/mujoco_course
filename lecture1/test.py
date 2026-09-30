@@ -41,7 +41,7 @@ with mujoco.viewer.launch_passive(model, data) as viewer:
         # Legs: hold joint positions
         tau = pd_control(target_dof_pos, data.sensordata[:NUM_MOTOR], kps, np.zeros(6), data.sensordata[NUM_MOTOR:NUM_MOTOR + NUM_MOTOR], kds)
         # Wheels: balance from IMU
-        tau[WHEEL_IDX] = (pitch - target_pitch) * kp_pitch + pitch_rate * kd_pitch
+        tau[WHEEL_IDX] = -pd_control(target_pitch, pitch, kp_pitch, 0, pitch_rate, kd_pitch)
         data.ctrl[:] = tau
         model.opt.timestep = simulation_dt
         mujoco.mj_step(model, data)
